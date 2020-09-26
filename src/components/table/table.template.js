@@ -11,13 +11,22 @@ function toCell() {
 
 function toColumn(col) {
     return `
-      <div class="column">${col}</div>`;
+      <div class="column" data-type="resizable">
+        ${col}
+        <div class="col-resize" data-resize="col"></div>
+      </div>`;
 }
 
 function createRow(content, index = '') {
+    const resizer = index !== ''
+        ? '<div class="row-resize" data-resize="row"></div>'
+        : '';
     return `
         <div class="row">
-            <div class="row-info">${index}</div>
+            <div class="row-info" data-type="resizable">
+                ${index}
+                ${resizer}
+            </div>
             <div class="row-data">${content}</div>
         </div>
     `;
@@ -37,12 +46,12 @@ export function createTable(rowsCount = 15) {
         .join('');
     rows.push(createRow(cols));
 
-    for ( let i = 0; i < rowsCount; i++ ) {
+    for (let i = 0; i < rowsCount; i++) {
         const cells = new Array(colsCount)
             .fill('')
             .map(toCell)
             .join('');
-        rows.push(createRow(cells, i+1));
+        rows.push(createRow(cells, i + 1));
     }
     return rows.join('');
 }
