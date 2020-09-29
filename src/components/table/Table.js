@@ -22,20 +22,19 @@ export class Table extends ExcelComponent {
             const $parent = $resizer.closest('[data-type="resizable"]');
             const coords = $parent.getCoords();
             const type = event.target.dataset.resize;
-            const index = [...$parent.$el.parentElement.children]
-                .indexOf($parent.$el);
-            const $rowsCells = [].slice.call(document.querySelectorAll('.row'))
-                .slice(1);
-            const cellsIndex = $rowsCells.map(row => {
-                return row.querySelectorAll('.cell')[index];
-            });
-            const cellsInfo = [].slice.call($parent.$el.parentElement
+            const colIndex = $parent.$el.textContent.trim();
+            const cellsIndex = [].slice.call(document
+                .querySelectorAll(`[data-cell="${colIndex}"]`));
+            const cellsInfo = [].slice.call($parent.$el
+                .closest('[data-row="parent-row"]')
                 .querySelectorAll('.cell'));
+            console.log(type);
             if ( type === 'col' ) {
-                cellsIndex.forEach(el => el.style.borderRightColor = '#3c74ff');
-            } else {
-                cellsInfo.forEach(el => el.style.borderBottomColor = '#3c74ff');
+                cellsIndex.forEach(el => toggleClass(el, 'active-col'));
+            } else if ( type ==='row' ) {
+                cellsInfo.forEach(el => toggleClass(el, 'active-cell'));
             }
+
             document.onmousemove = e => {
                 if ( type === 'col' ) {
                     const delta = e.pageX - coords.right;
@@ -52,10 +51,15 @@ export class Table extends ExcelComponent {
             };
 
             document.onmouseup = () => {
-                cellsIndex.forEach(el => el.style.borderRightColor = '#e2e3e3');
-                cellsInfo.forEach(el => el.style.borderBottomColor = '#e2e3e3');
+                cellsIndex.forEach(el => toggleClass(el, 'active-col'));
+                cellsInfo.forEach(el => toggleClass(el, 'active-cell'));
                 document.onmousemove = null;
             };
         }
     }
+}
+
+
+function toggleClass(el, className) {
+    return el.classList.toggle(className);
 }
