@@ -3,15 +3,15 @@ const CODES = {
     Z: 90
 };
 
-function toCell(col) {
+function toCell(_, col) {
     return `
-      <div class="cell" data-cell="${col}" contenteditable=""></div>
+      <div class="cell" data-col="${col}" contenteditable=""></div>
     `;
 }
 
-function toColumn(col) {
+function toColumn(col, index) {
     return `
-      <div class="column" data-type="resizable">
+      <div class="column" data-type="resizable" data-col="${index}">
         ${col}
         <div class="col-resize" data-resize="col"></div>
       </div>`;
@@ -22,8 +22,8 @@ function createRow(content, index = '') {
         ? '<div class="row-resize" data-resize="row"></div>'
         : '';
     return `
-        <div class="row" data-row="parent-row">
-            <div class="row-info" data-type="resizable">
+        <div class="row" data-row="parent-row" data-type="resizable">
+            <div class="row-info">
                 ${index}
                 ${resizer}
             </div>
@@ -49,7 +49,6 @@ export function createTable(rowsCount = 15) {
     for (let i = 0; i < rowsCount; i++) {
         const cells = new Array(colsCount)
             .fill('')
-            .map(toChar)
             .map(toCell)
             .join('');
         rows.push(createRow(cells, i + 1));
